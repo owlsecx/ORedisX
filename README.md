@@ -18,24 +18,18 @@
 
 ## 📌 Overview
 
-Offline Redis / Valkey / KeyDB configuration security auditor
+ORedisX is an offline configuration auditor for Redis, Valkey and KeyDB. It parses redis.conf-style files with include chains and ACL rules, and flags network exposure, weak authentication, dangerous commands, TLS gaps and persistence-based write primitives. An optional safe probe performs only PING/INFO, never AUTH.
 
 ---
 
 ## ✨ Features
 
-- Faithful redis.conf / valkey.conf / keydb.conf parser (sdssplitargs quoting, include chains, glob includes, last-wins semantics, per-directive file:line origin)
-- ACL engine — inline `user` rules and external aclfile, nopass / plaintext / weak-secret / over-privilege
-- Network exposure — bind, protected-mode, unix socket, unauthenticated reachability correlation
-- Dangerous command matrix — FLUSHALL, FLUSHDB, CONFIG, DEBUG, KEYS, SLAVEOF/REPLICAOF, MODULE, EVAL ... with rename-command + ACL awareness
-- TLS review — tls-port, protocols, ciphers, client auth, replication & cluster bus encryption
-- Persistence abuse — dir / dbfilename write-primitive detection (ssh keys, cron, web roots, world-writable)
-- File-permission audit of conf, ACL, includes, data
-- Offline --root tree discovery + systemd unit checks
-- Optional safe --probe (PING / INFO only, no auth)
-- CWE + MITRE ATT&CK mapping, score & grade
-- Export TXT / Markdown / JSON / CSV / SARIF 2.1.0
-- Self-test --demo, CI gates --fail-on / --min-severity
+- Faithful redis.conf/valkey.conf/keydb.conf parser with include chains and per-directive origins
+- ACL engine for inline and external rules (nopass, plaintext, over-privilege)
+- Network-exposure analysis of bind, protected-mode and unix sockets
+- Dangerous-command matrix (FLUSHALL, CONFIG, DEBUG, EVAL and more) with rename/ACL awareness
+- TLS review and persistence write-primitive detection
+- Optional safe PING/INFO probe, CWE/MITRE mapping and TXT/MD/JSON/CSV/SARIF export
 
 ---
 
@@ -49,7 +43,10 @@ Offline Redis / Valkey / KeyDB configuration security auditor
 ## 🚀 Usage
 
 ```bash
-./ORedisX
+./ORedisX -c /etc/redis/redis.conf
+./ORedisX --scan --root /mnt/collected --sarif -o report.sarif
+./ORedisX --probe 127.0.0.1:6379 --fail-on high
+./ORedisX --help
 ```
 
 ---
